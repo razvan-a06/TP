@@ -338,7 +338,6 @@ int main() {
                             wait(2);
                     }
                 } while (diff < 0);
-                wait(2);
                 optiune = 0;
                 break;
             case 2:
