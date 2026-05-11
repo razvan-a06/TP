@@ -182,28 +182,76 @@ char** loadWordsFromFile(const char* filename, int* count) {
 }
 
 void playGame(int diff) {
-    printf("\n---> Incepem un joc nou!\n");
-    wait(2);
-    char** dictionar; int count;
+    char** dictionar; int count, length, index;
+    char* hiddenWord;
+    char* secretWord;
     switch (diff) {
         case 1:
             dictionar = loadWordsFromFile("../usor.json", &count);
+            index = rand() % count;
+            secretWord = dictionar[index];
             break;
         case 2:
             dictionar = loadWordsFromFile("../mediu.json", &count);
+            index = rand() % count;
+            secretWord = dictionar[index];
             break;
         case 3:
             dictionar = loadWordsFromFile("../greu.json", &count);
+            index = rand() % count;
+            secretWord = dictionar[index];
+            break;
+        case 4:
+            secretWord = malloc(21 * sizeof(char));
+            if (!secretWord) {
+                printf("Memorie insuficienta!");
+                exit(-1);
+            }
+
+            int validWord = 0;
+            do {
+                printf("---> Jucator 1, introdu cuvantul secret (doar litere, maxim 20): ");
+                fgets(secretWord, 21, stdin);
+
+                if (strchr(secretWord, '\n') == NULL) {
+                    printf("\n" COLOR_YELLOW "EROARE: Cuvantul este prea lung! Maxim 20 de litere." COLOR_RESET "\n\n");
+                    while (getchar() != '\n');
+                    continue;
+                }
+
+                secretWord[strcspn(secretWord, "\n")] = '\0';
+
+                if (strlen(secretWord) == 0) {
+                    printf("\n" COLOR_YELLOW "EROARE: Nu ai introdus niciun cuvant!" COLOR_RESET "\n\n");
+                    continue;
+                }
+
+                validWord = 1;
+                for (int i = 0; secretWord[i] != '\0'; i++) {
+                    if (!isalpha(secretWord[i])) {
+                        validWord = 0;
+                        break;
+                    }
+                }
+
+                if (validWord == 0) {
+                    printf("\n" COLOR_YELLOW "EROARE: Cuvantul trebuie sa contina DOAR litere (fara cifre, spatii sau simboluri)!" COLOR_RESET "\n\n");
+                }
+
+            } while (validWord == 0);
+
+            for(int i = 0; secretWord[i] != '\0'; i++) {
+                secretWord[i] = tolower(secretWord[i]);
+            }
             break;
         default:
             printf("eroare dificultate");
             exit(-1);
     }
-    int index = rand() % count;
-
-    char* secretWord = dictionar[index];
-    int length = strlen(secretWord);
-    char* hiddenWord = malloc((length+1)*sizeof(char));
+    printf("\n---> Incepem un joc nou!\n");
+    wait(2);
+    length = strlen(secretWord);
+    hiddenWord = malloc((length+1)*sizeof(char));
     if (!hiddenWord) {
         printf("Memorie insuficienta!");
         freeWords(dictionar, count);
@@ -295,6 +343,10 @@ void playGame(int diff) {
         clearScreen();
     }
     free(hiddenWord);
-    freeWords(dictionar, count);
-    free(dictionar);
+    if (diff == 4)
+        free(secretWord);
+    else {
+        freeWords(dictionar, count);
+        free(dictionar);
+    }
 }

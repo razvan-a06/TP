@@ -5,7 +5,7 @@
 
 int main() {
     srand(time(NULL));
-    int optiune, diff;
+    int optiune, diff, mod;
 
     do {
         clearScreen();
@@ -14,34 +14,58 @@ int main() {
         if (scanf("%d", &optiune) != 1) {
             optiune = -1;
         }
-        while (getchar() != '\n');
+        if (getchar() != '\n') {
+            optiune = -1;
+            while (getchar() != '\n');
+        }
 
         switch(optiune) {
             case 1:
                 do {
-                clearScreen();
-                printf("---> Alegeti nivelul de dificultate:\n\n");
-                printf("1. Usor\n2. Mediu\n3. Greu\n\nAlege o optiune:");
-                    if (scanf("%d", &diff) != 1) {
-                        diff = -1;
+                    clearScreen();
+                    printf("---> Alegeti modul de joc:\n\n");
+                    printf("1. Single-player\n2. Multiplayer\n\nAlege o optiune:");
+                    if (scanf("%d", &mod) != 1) {
+                        mod = -1;
                     }
-                    while (getchar() != '\n');
-                    switch (diff) {
-                        case 1:
-                            playGame(1);
-                            break;
-                        case 2:
-                            playGame(2);
-                            break;
-                        case 3:
-                            playGame(3);
-                            break;
-                        default:
-                            printf("\n---> Optiune invalida! Te rog alege 1, 2 sau 3.\n");
+                    if (getchar() != '\n') {
+                        printf("\n---> Optiune invalida! Te rog alege 1 sau 2.\n");
+                        mod = -1;
+                    }
+                } while (mod < 0);
+                if (mod == 1) {
+                    do {
+                        clearScreen();
+                        printf("---> Alegeti nivelul de dificultate:\n\n");
+                        printf("1. Usor\n2. Mediu\n3. Greu\n\nAlege o optiune:");
+                        if (scanf(" %d", &diff) != 1) {
                             diff = -1;
-                            wait(2);
-                    }
-                } while (diff < 0);
+                        }
+                        if (getchar() != '\n') {
+                            diff = -1;
+                            while (getchar() != '\n');
+                        }
+                        switch (diff) {
+                            case 1:
+                                playGame(1);
+                                break;
+                            case 2:
+                                playGame(2);
+                                break;
+                            case 3:
+                                playGame(3);
+                                break;
+                            default:
+                                printf("\n---> Optiune invalida! Te rog alege 1, 2 sau 3.\n");
+                                diff = -1;
+                                wait(2);
+                        }
+                    } while (diff < 0);
+                }
+                else {
+                    clearScreen();
+                    playGame(4);
+                }
                 optiune = 0;
                 break;
             case 2:
