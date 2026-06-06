@@ -4,11 +4,12 @@
 #include <string.h>
 #include <ctype.h>
 
-#define COLOR_RED     "\033[1;31m"
-#define COLOR_GREEN   "\033[1;32m"
-#define COLOR_YELLOW  "\033[1;33m"
-#define COLOR_CYAN    "\033[1;36m"
-#define COLOR_RESET   "\033[0m"
+#ifdef _WIN32
+    #include <windows.h>
+#else
+    #include <unistd.h>
+#endif
+
 
 #define CHUNK 50
 
@@ -29,14 +30,17 @@ void wait(int seconds) {
 }
 
 void afisareMeniu() {
-    printf("==============================\n");
-    printf(COLOR_CYAN"      JOC SPANZURATOAREA      \n"COLOR_RESET);
-    printf("==============================\n");
-    printf(" 1. Joaca\n");
-    printf(" 2. Reguli\n");
-    printf(" 0. Iesire\n");
-    printf("==============================\n");
-    printf("Alege o optiune: ");
+        printf(COLOR_CYAN);
+        printf("========================================\n");
+        printf("       " COLOR_YELLOW "++ JOC SPANZURATOAREA ++" COLOR_CYAN "       \n");
+        printf("========================================\n" COLOR_RESET);
+        printf("\n");
+        printf("  " COLOR_GREEN "[1]" COLOR_RESET " Joaca (Single-player & Multiplayer)\n");
+        printf("  " COLOR_YELLOW "[2]" COLOR_RESET " Reguli si Instructiuni\n");
+        printf("  " COLOR_RED "[0]" COLOR_RESET " Iesire\n");
+        printf("\n");
+        printf(COLOR_CYAN "========================================\n" COLOR_RESET);
+        printf("Alege o optiune: ");
 }
 
 void drawHangman(int mistakes) {
@@ -202,7 +206,7 @@ void playGame(int diff) {
             secretWord = dictionar[index];
             break;
         case 4:
-            secretWord = malloc(21 * sizeof(char));
+            secretWord = malloc(22 * sizeof(char));
             if (!secretWord) {
                 printf("Memorie insuficienta!");
                 exit(-1);
@@ -211,7 +215,7 @@ void playGame(int diff) {
             int validWord = 0;
             do {
                 printf("---> Jucator 1, introdu cuvantul secret (doar litere, maxim 20): ");
-                fgets(secretWord, 21, stdin);
+                fgets(secretWord, 22, stdin);
 
                 if (strchr(secretWord, '\n') == NULL) {
                     printf("\n" COLOR_YELLOW "EROARE: Cuvantul este prea lung! Maxim 20 de litere." COLOR_RESET "\n\n");
@@ -254,8 +258,13 @@ void playGame(int diff) {
     hiddenWord = malloc((length+1)*sizeof(char));
     if (!hiddenWord) {
         printf("Memorie insuficienta!");
-        freeWords(dictionar, count);
-        free(dictionar);
+        if (diff == 4) {
+            free(secretWord);
+        }
+        else {
+            freeWords(dictionar, count);
+            free(dictionar);
+        }
         exit(-1);
     }
     char wrongLetters[7] = "";

@@ -29,8 +29,15 @@ int main() {
                         mod = -1;
                     }
                     if (getchar() != '\n') {
+                        while (getchar() != '\n');
                         printf("\n---> Optiune invalida! Te rog alege 1 sau 2.\n");
                         mod = -1;
+                        wait(2);
+                    }
+                    else if (mod != 1 && mod != 2) {
+                        mod = -1;
+                        printf("\n---> Optiune invalida! Te rog alege 1 sau 2.\n");
+                        wait(2);
                     }
                 } while (mod < 0);
                 if (mod == 1) {
@@ -62,14 +69,30 @@ int main() {
                         }
                     } while (diff < 0);
                 }
-                else {
+                if (mod == 2) {
                     clearScreen();
                     playGame(4);
                 }
                 optiune = 0;
                 break;
             case 2:
-                printf("\n---> REGULI: Ai 6 incercari sa ghicesti cuvantul ascuns. Succes!\n");
+                clearScreen();
+                printf(COLOR_CYAN "========================================\n");
+                printf("             " COLOR_YELLOW "REGULI DE JOC" COLOR_CYAN "              \n");
+                printf("========================================\n" COLOR_RESET);
+                printf("\n");
+                printf("  " COLOR_GREEN "SCOPUL:" COLOR_RESET " Ghiceste cuvantul ascuns litera cu litera.\n\n");
+
+                printf("  " COLOR_YELLOW "MODURI DE JOC:\n" COLOR_RESET);
+                printf("  * " COLOR_CYAN "Single-player:" COLOR_RESET " Calculatorul alege un cuvant random.\n");
+                printf("  * " COLOR_CYAN "Multiplayer:" COLOR_RESET " Un prieten alege cuvantul (max 20 litere).\n\n");
+
+                printf("  " COLOR_RED "ATENTIE:\n" COLOR_RESET);
+                printf("  * Ai la dispozitie " COLOR_RED "6 greseli" COLOR_RESET " inainte sa pierzi jocul.\n");
+                printf("  * Poti introduce " COLOR_YELLOW "doar litere" COLOR_RESET " din alfabet (a-z).\n");
+                printf("  * Literele deja incercate nu te vor penaliza a doua oara.\n");
+                printf("\n");
+                printf(COLOR_CYAN "========================================\n" COLOR_RESET);
                 break;
             case 0:
                 printf("\n---> Iesire din joc. La revedere!\n");
